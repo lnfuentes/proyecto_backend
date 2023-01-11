@@ -1,9 +1,11 @@
 const fs = require('fs');
 
-class ProductManager {
-    static productId = 0;
+class Persistence {
+    static id = 0;
     constructor(path) {
         this.path = path;
+        this.carts = [];
+        this.products = [];
     }
 
     writeData(data) {
@@ -23,10 +25,28 @@ class ProductManager {
             throw new Error(error);
         }
     }
+
+    addCart(cart) {
+        cart.id = Persistence.id++;
+        this.carts.push(cart);
+        this.writeData(this.carts);
+    }
+
+    addProduct(product) {
+        product.id = Persistence.id++;
+
+        if(!product.title || !product.description || !product.price || !product.code || !product.stock || !product.category || !product.status) {
+            throw new Error('Todos los campos son obligatorios');
+        } else {
+            this.products.push(product);
+            this.writeData(this.products);
+        }
+
+    }
 }
 
-const productList = new ProductManager('database/products.json');
-const cartList = new ProductManager('database/carts.json');
+const productList = new Persistence('database/products.json');
+const cartList = new Persistence('database/carts.json');
 
 module.exports = {
     productList,
