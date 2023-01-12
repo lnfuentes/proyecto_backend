@@ -15,25 +15,32 @@ routerCarts.post('/', (req, res) => {
 
 
 routerCarts.get('/:cid', (req, res) => {
-    const cartId = carts.find(c => c.id === + req.params.cid);
+    const cartId = carts.find(c => c.id === +req.params.cid);
     res.send(cartId.products);
 })
 
 routerCarts.post('/:cid/product/:pid', (req, res) => {
     const cartId = carts.find(c => c.id === +req.params.cid);
-    let quantity = 0;
-    const productId = +req.params.pid
-    if(quantity >= 0) {
-        quantity++;
-    }
-    const productToCart = {
-        product: productId,
-        quantity: quantity
-    }
+    const productId = +req.params.pid;
+    let quantity = 1;
+    
+    if(cartId.products.length === 0) {
+        const productToCart = {
+            product: productId,
+            quantity: quantity
+        }
 
-    cartId.products.push(productToCart);
-    cartList.writeData(cartId);
+        cartId.products.push(productToCart);
+    } else {
+        cartId.products.forEach(p => {
+            p.quantity++;
+        });
+    }
+    
+    cartList.writeData(carts);
     res.send('Producto añadido')
+    console.log(cartId.products.length);
+    console.log(productId);
 })
 
 module.exports = {
