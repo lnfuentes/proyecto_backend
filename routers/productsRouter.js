@@ -1,6 +1,6 @@
 const express = require('express');
 const routerProducts = express.Router();
-const {productList} = require('../persistence'); 
+const {productList} = require('../persistence');
 
 const products = productList.readFile()
 
